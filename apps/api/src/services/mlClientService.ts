@@ -9,19 +9,19 @@ export interface MLPredictionResponse {
 }
 
 export class MLClientService {
-  private baseUrl: string;
-
-  constructor() {
-    this.baseUrl = env.ML_SERVICE_URL;
+  private getBaseUrl(): string {
+    const rawUrl = process.env.ML_SERVICE_URL || env.ML_SERVICE_URL || 'http://localhost:8000';
+    return rawUrl.endsWith('/') ? rawUrl : `${rawUrl}/`;
   }
 
   /**
    * Send student features to Python FastAPI ML service
    */
   async predict(features: FeatureInputs): Promise<MLPredictionResponse> {
+    const targetUrl = new URL('predict', this.getBaseUrl()).toString();
     try {
       const response = await axios.post<MLPredictionResponse>(
-        `${this.baseUrl}/predict`,
+        targetUrl,
         {
           attendance: features.attendance,
           previousScore: features.previousScore,
@@ -41,7 +41,7 @@ export class MLClientService {
 
       return response.data;
     } catch (error: any) {
-      console.error('[MLClientService] Call failed to ML service at', `${this.baseUrl}/predict`, error.message);
+      console.error('[MLClientService] Call failed to ML service at', targetUrl, error.message);
       const customError: any = new Error(
         'AI prediction service is currently unavailable. Please try again later.'
       );
@@ -54,8 +54,9 @@ export class MLClientService {
    * Health check for ML Service
    */
   async checkHealth(): Promise<{ status: string; modelVersion?: string; ready: boolean }> {
+    const targetUrl = new URL('health', this.getBaseUrl()).toString();
     try {
-      const response = await axios.get(`${this.baseUrl}/health`, { timeout: 3000 });
+      const response = await axios.get(targetUrl, { timeout: 3000 });
       return response.data;
     } catch (error: any) {
       return {

@@ -12,7 +12,26 @@ import {
   FeatureInputs,
 } from '@eduguard/shared';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const getApiBaseUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    // In standalone local dev (localhost:3000), route to Express API port 5000
+    if (window.location.hostname === 'localhost' && window.location.port === '3000') {
+      return 'http://localhost:5000/api';
+    }
+    // On Vercel deployments and vercel dev proxy, route to same-origin /api
+    return '/api';
+  }
+  // Server-side: use Vercel service binding API_SERVICE_URL if present
+  if (process.env.API_SERVICE_URL) {
+    return `${process.env.API_SERVICE_URL.replace(/\/$/, '')}/api`;
+  }
+  return 'http://localhost:5000/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

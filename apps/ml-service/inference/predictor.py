@@ -9,7 +9,11 @@ from tensorflow import keras
 
 class StudentPredictor:
     def __init__(self, model_dir: str = "models"):
-        self.model_dir = model_dir
+        if model_dir == "models":
+            abs_models = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "models"))
+            self.model_dir = abs_models if os.path.exists(abs_models) else "models"
+        else:
+            self.model_dir = model_dir
         self.model = None
         self.scaler = None
         self.metadata = None

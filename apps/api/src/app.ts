@@ -26,8 +26,22 @@ import participationRoutes from './routes/participationRoutes';
 import programRoutes from './routes/programRoutes';
 import departmentRoutes from './routes/departmentRoutes';
 import { mlClientService } from './services/mlClientService';
+import mongoose from 'mongoose';
+import { connectDatabase } from './config/database';
 
 export const app = express();
+
+// Ensure database connection for serverless/function invocations
+app.use(async (_req, _res, next) => {
+  if (mongoose.connection.readyState === 0) {
+    try {
+      await connectDatabase();
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
+});
 
 // Security & Parsing
 app.use(helmet());
@@ -95,3 +109,5 @@ app.use('*', (req: Request, res: Response) => {
 
 // Error handling
 app.use(errorHandler);
+
+export default app;

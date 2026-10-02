@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { env } from './environment';
 
 export async function connectDatabase(): Promise<typeof mongoose> {
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose;
+  }
   try {
     const conn = await mongoose.connect(env.MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,

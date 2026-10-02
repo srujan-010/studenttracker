@@ -921,7 +921,7 @@ async function seed() {
     else if (predScore < 70) risk = 'MEDIUM';
 
     const riskFactors = analyzeRiskFactors(featureInputs, DEFAULT_RISK_THRESHOLDS);
-    const recommendations = generateRecommendations(featureInputs, risk, riskFactors);
+    const recommendations = generateRecommendations(risk, predScore, riskFactors);
 
     predictionsToInsert.push({
       studentId: student._id,
