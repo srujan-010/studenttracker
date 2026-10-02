@@ -178,6 +178,14 @@ def train_model(data_path: str = "data/student_performance_data.csv", output_dir
     print(f"  - Model:    {model_path}")
     print(f"  - Scaler:   {scaler_path}")
     print(f"  - Metadata: {metadata_path}")
+
+    # 10. Automatically export lightweight NumPy deployment artifacts
+    try:
+        from export_model import export_model_artifacts
+    except ImportError:
+        from training.export_model import export_model_artifacts
+    export_model_artifacts(model_dir=output_dir)
+
     print("====================================================")
 
     return metadata

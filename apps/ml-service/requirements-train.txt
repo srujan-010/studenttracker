@@ -1,0 +1,7 @@
+# EduGuard AI - Local Model Training Dependencies
+# Used exclusively for retraining the ANN model locally (NOT installed on Vercel)
+-r requirements.txt
+pandas>=2.2.0
+scikit-learn>=1.4.0
+joblib>=1.4.0
+tensorflow>=2.15.0
