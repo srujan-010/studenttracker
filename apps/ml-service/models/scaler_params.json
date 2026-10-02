@@ -1,0 +1,26 @@
+{
+  "features": [
+    "attendance",
+    "previousScore",
+    "internalMarks",
+    "assignmentCompletion",
+    "studyHours",
+    "participation"
+  ],
+  "mean": [
+    71.3340625,
+    67.886,
+    62.37175,
+    57.9004375,
+    8.8473125,
+    67.277875
+  ],
+  "scale": [
+    15.47863838,
+    14.05909951,
+    9.73026667,
+    10.83975062,
+    4.00313849,
+    14.38468667
+  ]
+}

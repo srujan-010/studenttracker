@@ -1,0 +1,16 @@
+# Python Virtual Environments & Cache
+apps/ml-service/venv
+apps/ml-service/.venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Training scripts and synthetic raw data (not needed for serverless inference)
+apps/ml-service/data/
+apps/ml-service/training/
+
+# Documentation and PDF build artifacts
+EduGuard_AI_Appendix_A_Source_Code.pdf
+appendix_a_source_code.html
+*.log
