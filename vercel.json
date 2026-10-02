@@ -4,6 +4,7 @@
     "api": {
       "root": "apps/api",
       "framework": "express",
+      "buildCommand": "npm --prefix ../../packages/shared run build && tsc",
       "bindings": [
         {
           "type": "service",
@@ -20,6 +21,7 @@
     "web": {
       "root": "apps/web",
       "framework": "nextjs",
+      "buildCommand": "npm --prefix ../../packages/shared run build && next build",
       "bindings": [
         {
           "type": "service",
