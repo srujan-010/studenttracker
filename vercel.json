@@ -16,7 +16,8 @@
     },
     "ml-service": {
       "root": "apps/ml-service",
-      "framework": "fastapi"
+      "framework": "fastapi",
+      "entrypoint": "main:app"
     },
     "web": {
       "root": "apps/web",

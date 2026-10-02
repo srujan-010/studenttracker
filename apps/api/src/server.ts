@@ -45,7 +45,10 @@ async function startServer() {
   }
 }
 
-startServer();
+// Only start persistent HTTP listener in standalone / local development mode (not when loaded as a Vercel Function)
+if (!process.env.VERCEL) {
+  startServer();
+}
 
 export { app };
 export default app;
