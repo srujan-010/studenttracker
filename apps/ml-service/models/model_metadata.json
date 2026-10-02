@@ -1,0 +1,45 @@
+{
+  "version": "v1.0.0",
+  "createdAt": "2026-09-30T08:40:32.018284Z",
+  "features": [
+    "attendance",
+    "previousScore",
+    "internalMarks",
+    "assignmentCompletion",
+    "studyHours",
+    "participation"
+  ],
+  "target": "finalScore",
+  "datasetIdentifier": "student_performance_data.csv",
+  "datasetSize": 2000,
+  "testSplit": 0.2,
+  "metrics": {
+    "mae": 3.295,
+    "rmse": 4.169,
+    "r2": 0.8117
+  },
+  "hyperparameters": {
+    "layers": [
+      64,
+      32,
+      16,
+      1
+    ],
+    "activations": [
+      "relu",
+      "relu",
+      "relu",
+      "linear"
+    ],
+    "dropout": [
+      0.2,
+      0.1
+    ],
+    "optimizer": "Adam",
+    "learningRate": 0.001,
+    "loss": "mean_squared_error",
+    "epochsTrained": 80
+  },
+  "frameworkVersion": "TensorFlow 2.21.0 / Keras 3.15.1",
+  "status": "ACTIVE"
+}

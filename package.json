@@ -1,0 +1,24 @@
+{
+  "name": "eduguard-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EduGuard AI - AI-Powered Student Performance Prediction & Early Warning System",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"API,WEB,ML\" -c \"blue,green,yellow\" \"npm run dev:api\" \"npm run dev:web\" \"npm run dev:ml\"",
+    "dev:api": "npm --workspace=@eduguard/api run dev",
+    "dev:web": "npm --workspace=@eduguard/web run dev",
+    "dev:ml": "powershell -Command \"cd apps/ml-service; .\\venv\\Scripts\\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload\"",
+    "train:ml": "powershell -Command \"cd apps/ml-service; .\\venv\\Scripts\\python.exe training/train.py\"",
+    "build": "npm --workspace=@eduguard/shared run build && npm --workspace=@eduguard/api run build && npm --workspace=@eduguard/web run build",
+    "seed": "npm --workspace=@eduguard/api run seed",
+    "test": "npm --workspace=@eduguard/api run test",
+    "test:e2e": "npx tsx scripts/e2e-verification.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
