@@ -12,37 +12,63 @@ import {
   FeatureInputs,
 } from '@eduguard/shared';
 
-const getApiBaseUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
+export const getApiBaseUrl = (): string => {
+  // 1. Browser runtime (Client-side execution in Chrome/Firefox/Safari)
   if (typeof window !== 'undefined') {
-    // In standalone local dev (localhost:3000), route to Express API port 5000
-    if (window.location.hostname === 'localhost' && window.location.port === '3000') {
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+
+    if (isLocalhost) {
+      // In local dev browser, use explicit env if set, otherwise standalone port 5000
+      if (
+        process.env.NEXT_PUBLIC_API_URL &&
+        (process.env.NEXT_PUBLIC_API_URL.includes('localhost') ||
+          process.env.NEXT_PUBLIC_API_URL.includes('127.0.0.1'))
+      ) {
+        return process.env.NEXT_PUBLIC_API_URL;
+      }
       return 'http://localhost:5000/api';
     }
-    // On Vercel deployments and vercel dev proxy, route to same-origin /api
+
+    // In production browser (e.g. *.vercel.app, custom domains):
+    // ALWAYS use same-origin '/api' routed via Vercel Services rewrites.
+    // NEVER fall back to localhost in production browser!
     return '/api';
   }
-  // Server-side: use Vercel service binding API_SERVICE_URL if present
+
+  // 2. Server-side runtime (SSR / Next.js Server Components / Node.js)
+  // Check for internal Vercel Service binding URL
   if (process.env.API_SERVICE_URL) {
     return `${process.env.API_SERVICE_URL.replace(/\/$/, '')}/api`;
   }
+
+  // Check for Vercel deployment URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/api`;
+  }
+
+  // Local development server-side fallback
+  if (process.env.NEXT_PUBLIC_API_URL && !process.env.VERCEL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
   return 'http://localhost:5000/api';
 };
 
-const API_BASE_URL = getApiBaseUrl();
-
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 12000,
 });
 
-// Request interceptor to attach JWT token
+// Request interceptor to attach JWT token and ensure baseURL is ALWAYS dynamic at runtime
 api.interceptors.request.use((config) => {
+  // Ensure baseURL is dynamically resolved at request time
+  config.baseURL = getApiBaseUrl();
+
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('eduguard_token');
     if (token) {
